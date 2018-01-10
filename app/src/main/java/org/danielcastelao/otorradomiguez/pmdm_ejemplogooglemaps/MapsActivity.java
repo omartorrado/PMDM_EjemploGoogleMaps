@@ -2,6 +2,9 @@ package org.danielcastelao.otorradomiguez.pmdm_ejemplogooglemaps;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -94,7 +97,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 currentLocation=location;
                 LatLng latLng=new LatLng(location.getLatitude(),location.getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                mMap.addMarker(new MarkerOptions().position(latLng).title("Aqui estoy"));
+
+                /*
+                Aqui generamos el icono a partir de la imagen vectorial usando el metodo de mas abajo (getIconFromDrawable)
+                 */
+                BitmapDescriptor markerIcon = getIconFromDrawable(getResources().getDrawable(R.drawable.ic_cityscape,null));
+
+                mMap.addMarker(new MarkerOptions().position(latLng).title("Aqui estoy").icon(markerIcon));
             }
 
             @Override
@@ -114,5 +123,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
 
+    }
+
+    /*
+    Esto lo tengo que hacer para convertir las imagenes vectoriales en bitmaps y devolver un BitmapDescriptor para generar el icono
+     */
+    public BitmapDescriptor getIconFromDrawable(Drawable drawable) {
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 }

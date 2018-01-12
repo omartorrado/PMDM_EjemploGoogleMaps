@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -11,6 +12,7 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -22,8 +24,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
 
 import java.security.AccessController;
+import java.text.DecimalFormat;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -31,6 +38,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Location currentLocation;
     private LocationManager locationManager;
+
+    private Polyline ruta=null;
+    private PolylineOptions rutaOptions;
+
+
+    private TextView textViewAccuracy;
+    private TextView textViewLat;
+    private TextView textViewLng;
+    private TextView textViewDist;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +57,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        textViewAccuracy=(TextView) findViewById(R.id.textViewAccuracy);
+        textViewLat=(TextView) findViewById(R.id.textViewLat);
+        textViewLng=(TextView) findViewById(R.id.textViewLng);
+        textViewDist=(TextView) findViewById(R.id.textViewDistancia);
+
+
     }
 
 
@@ -90,20 +114,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Cargando el locationManager
         locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, new LocationListener() {
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 20, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Toast.makeText(MapsActivity.this, "Lon: "+location.getLongitude()+" Lat: "+location.getLatitude(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MapsActivity.this, "Lon: "+location.getLongitude()+" Lat: "+location.getLatitude(), Toast.LENGTH_SHORT).show();
                 currentLocation=location;
                 LatLng latLng=new LatLng(location.getLatitude(),location.getLongitude());
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
                 /*
                 Aqui generamos el icono a partir de la imagen vectorial usando el metodo de mas abajo (getIconFromDrawable)
-                 */
+
                 BitmapDescriptor markerIcon = getIconFromDrawable(getResources().getDrawable(R.drawable.ic_cityscape,null));
 
                 mMap.addMarker(new MarkerOptions().position(latLng).title("Aqui estoy").icon(markerIcon));
+                */
+
+                //Creamos una geovalla
+
+
+                //Creamos la polilinea si está vacia
+                if(ruta==null&&currentLocation.getAccuracy()<=20) {
+                    rutaOptions = new PolylineOptions();
+                    rutaOptions.add(latLng);
+                    rutaOptions.color(Color.RED);
+                    ruta=mMap.addPolyline(rutaOptions);
+                }else if(currentLocation.getAccuracy()<=20){
+                    List linea=ruta.getPoints();
+                    linea.add(latLng);
+                    ruta.setPoints(linea);
+                }else{
+                    Toast.makeText(MapsActivity.this, "Precision insuficiente", Toast.LENGTH_SHORT).show();
+                }
+
+                //Formateador para las coordenadas a 4 decimales
+                DecimalFormat df=new DecimalFormat("0.0000");
+
+                //Mostramos los datos de localizacion en los textView
+                textViewAccuracy.setText("Acc: "+location.getAccuracy());
+                textViewLat.setText("Lat: "+df.format(location.getLatitude()));
+                textViewLng.setText("Lng: "+df.format(location.getLongitude()));
+
+
             }
 
             @Override
@@ -123,6 +175,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
 
+
     }
 
     /*
@@ -135,5 +188,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         drawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+            }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

@@ -1,6 +1,7 @@
 package org.danielcastelao.otorradomiguez.pmdm_ejemplogooglemaps;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,6 +13,8 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +24,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -39,6 +43,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location currentLocation;
     private LocationManager locationManager;
 
+    private LatLng objectiveLocation;
+
     private Polyline ruta=null;
     private PolylineOptions rutaOptions;
 
@@ -47,6 +53,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView textViewLat;
     private TextView textViewLng;
     private TextView textViewDist;
+    private TextView textViewDistancia;
+
+    private Button boton1;
+    final LatLng danielCastelao = new LatLng(42.236574, -8.714311);
 
 
     @Override
@@ -61,8 +71,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         textViewAccuracy=(TextView) findViewById(R.id.textViewAccuracy);
         textViewLat=(TextView) findViewById(R.id.textViewLat);
         textViewLng=(TextView) findViewById(R.id.textViewLng);
-        textViewDist=(TextView) findViewById(R.id.textViewDistancia);
+        textViewDist=(TextView) findViewById(R.id.textViewDist);
+        textViewDistancia=(TextView) findViewById(R.id.textViewDistancia);
 
+        objectiveLocation=new LatLng(42.237436,-8.714226);
+
+        boton1=(Button)findViewById(R.id.button1);
+        boton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent barcodeReader = new Intent(getApplicationContext(),QRActivity.class);
+                startActivity(barcodeReader);
+            }
+        });
 
     }
 
@@ -86,11 +107,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         */
 
-        //Guardamos coordenadas en una variable
-        LatLng danielCastelao = new LatLng(42.236574, -8.714311);
-
         //Creamos un marcador en las coordenadas anteriores
         mMap.addMarker(new MarkerOptions().position(danielCastelao).title("CFP Daniel Castelao"));
+        //todo Ocultar el objetivo tras las pruebas
+        //mMap.addMarker(new MarkerOptions().position(objectiveLocation).title("Objetivo"));
 
         //Movermos la camara a esa posicion
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(danielCastelao, 15));
@@ -98,11 +118,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Elegir el tipo de mapa
         //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
-        //
+        //Mostra my location
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+        //estilo del mapa
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this,R.raw.style_json));
 
         //activar brujula
         mMap.getUiSettings().setCompassEnabled(true);
+
+        //Mostramos el area de busqueda
+        mMap.addCircle(new CircleOptions().center(danielCastelao).radius(500).strokeColor(Color.WHITE));
 
         //Comprobamos los permisos de localizacion y se los pedimos en caso de no tenerlos antes de activar MyLocation
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -114,7 +141,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Cargando el locationManager
         locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 20, new LocationListener() {
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 5, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 //Toast.makeText(MapsActivity.this, "Lon: "+location.getLongitude()+" Lat: "+location.getLatitude(), Toast.LENGTH_SHORT).show();
@@ -130,16 +157,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.addMarker(new MarkerOptions().position(latLng).title("Aqui estoy").icon(markerIcon));
                 */
 
-                //Creamos una geovalla
-
 
                 //Creamos la polilinea si está vacia
-                if(ruta==null&&currentLocation.getAccuracy()<=20) {
+                if(ruta==null&&currentLocation.getAccuracy()<=35) {
                     rutaOptions = new PolylineOptions();
                     rutaOptions.add(latLng);
                     rutaOptions.color(Color.RED);
                     ruta=mMap.addPolyline(rutaOptions);
-                }else if(currentLocation.getAccuracy()<=20){
+                }else if(currentLocation.getAccuracy()<=35){
                     List linea=ruta.getPoints();
                     linea.add(latLng);
                     ruta.setPoints(linea);
@@ -155,7 +180,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 textViewLat.setText("Lat: "+df.format(location.getLatitude()));
                 textViewLng.setText("Lng: "+df.format(location.getLongitude()));
 
+                //Calculamos la distancia al objetivo y si estamos en el area de busqueda
+                Location objective=new Location("");
+                objective.setLatitude(objectiveLocation.latitude);
+                objective.setLongitude(objectiveLocation.longitude);
 
+                Location centerPosition=new Location("");
+                centerPosition.setLatitude(danielCastelao.latitude);
+                centerPosition.setLongitude(danielCastelao.longitude);
+
+                textViewDist.setText("Distancia: "+location.distanceTo(objective));
+
+                if(location.distanceTo(centerPosition)>500){
+                    textViewDistancia.setText("Has salido de la zona"+location.distanceTo(centerPosition));
+                }else if(location.distanceTo(objective)<25){
+                    textViewDistancia.setText("Te quemas"+location.distanceTo(objective));
+                }else if(location.distanceTo(objective)<50){
+                    textViewDistancia.setText("Muy caliente");
+                }else if(location.distanceTo(objective)<100){
+                    textViewDistancia.setText("Caliente");
+                }else if(location.distanceTo(objective)<200){
+                    textViewDistancia.setText("Frio");
+                }else if(location.distanceTo(objective)<300){
+                    textViewDistancia.setText("Muy frio");
+                }
             }
 
             @Override
@@ -205,4 +253,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onResume() {
         super.onResume();
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+
 }

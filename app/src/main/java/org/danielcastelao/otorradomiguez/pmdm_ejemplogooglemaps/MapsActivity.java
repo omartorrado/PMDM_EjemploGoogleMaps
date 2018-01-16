@@ -74,6 +74,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         textViewDist=(TextView) findViewById(R.id.textViewDist);
         textViewDistancia=(TextView) findViewById(R.id.textViewDistancia);
 
+        textViewAccuracy.setText("Acc: ");
+        textViewLat.setText("Lat: ");
+        textViewLng.setText("Lng: ");
+        textViewDist.setText("Distancia: ");
+        textViewDistancia.setBackgroundColor(Color.parseColor("#bbdefb"));
+
         objectiveLocation=new LatLng(42.237436,-8.714226);
 
         boton1=(Button)findViewById(R.id.button1);
@@ -189,20 +195,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 centerPosition.setLatitude(danielCastelao.latitude);
                 centerPosition.setLongitude(danielCastelao.longitude);
 
-                textViewDist.setText("Distancia: "+location.distanceTo(objective));
+                textViewDist.setText("Distancia: "+df.format(location.distanceTo(objective)));
 
                 if(location.distanceTo(centerPosition)>500){
-                    textViewDistancia.setText("Has salido de la zona"+location.distanceTo(centerPosition));
+                    textViewDistancia.setText("Has salido de la zona");
+                    textViewDistancia.setBackgroundColor(Color.parseColor("#bbdefb"));
                 }else if(location.distanceTo(objective)<25){
-                    textViewDistancia.setText("Te quemas"+location.distanceTo(objective));
+                    textViewDistancia.setText("Te quemas. Busca un QR");
+                    textViewDistancia.setBackgroundColor(Color.parseColor("#7f0000"));
                 }else if(location.distanceTo(objective)<50){
                     textViewDistancia.setText("Muy caliente");
+                    textViewDistancia.setBackgroundColor(Color.parseColor("#f44336"));
                 }else if(location.distanceTo(objective)<100){
                     textViewDistancia.setText("Caliente");
+                    textViewDistancia.setBackgroundColor(Color.parseColor("#ec407a"));
                 }else if(location.distanceTo(objective)<200){
                     textViewDistancia.setText("Frio");
+                    textViewDistancia.setBackgroundColor(Color.parseColor("#ab47bc"));
                 }else if(location.distanceTo(objective)<300){
                     textViewDistancia.setText("Muy frio");
+                    textViewDistancia.setBackgroundColor(Color.parseColor("#3f51b5"));
+                }else if(location.distanceTo(objective)>=300) {
+                    textViewDistancia.setText("Helado");
+                    textViewDistancia.setBackgroundColor(Color.parseColor("#42a5f5"));
                 }
             }
 

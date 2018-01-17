@@ -58,7 +58,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button boton1;
     final LatLng danielCastelao = new LatLng(42.236574, -8.714311);
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 startActivity(barcodeReader);
             }
         });
+
 
     }
 
@@ -186,6 +186,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 textViewLat.setText("Lat: "+df.format(location.getLatitude()));
                 textViewLng.setText("Lng: "+df.format(location.getLongitude()));
 
+
+
+
                 //Calculamos la distancia al objetivo y si estamos en el area de busqueda
                 Location objective=new Location("");
                 objective.setLatitude(objectiveLocation.latitude);
@@ -219,6 +222,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     textViewDistancia.setText("Helado");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#42a5f5"));
                 }
+
             }
 
             @Override

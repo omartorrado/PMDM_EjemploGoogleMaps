@@ -43,7 +43,9 @@
         <activity
             android:name=".QRActivity"
             android:label="@string/title_activity_qr"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".WinActivity" />
+        <activity android:name=".ChooseLevelActivity"></activity>
     </application>
 
 </manifest>

@@ -42,10 +42,11 @@ public class QRActivity extends AppCompatActivity implements ZXingScannerView.Re
         if(rawResult!=lastResult) {
             Log.i("QRCode", rawResult.getText());
             lastResult=rawResult;
-            Toast.makeText(this, lastResult.getText(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, lastResult.getText(), Toast.LENGTH_SHORT).show();
             mScannerView.resumeCameraPreview(this);
-            Intent mapsActivity=new Intent(getApplicationContext(),MapsActivity.class);
-            startActivity(mapsActivity);
+            Intent winActivity=new Intent(getApplicationContext(),WinActivity.class);
+            winActivity.putExtra("qrText",lastResult.getText());
+            startActivity(winActivity);
         }
     }
 }

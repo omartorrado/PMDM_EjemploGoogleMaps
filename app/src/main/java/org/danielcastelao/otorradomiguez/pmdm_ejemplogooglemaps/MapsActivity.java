@@ -205,14 +205,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(location.distanceTo(centerPosition)>500){
                     textViewDistancia.setText("Has salido de la zona");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#bbdefb"));
-                }else if(location.distanceTo(objective)<25){
-                    textViewDistancia.setText("Te quemas. Busca un QR");
+                }else if(location.distanceTo(objective)<20){
+                    textViewDistancia.setText("Estas a menos de 20m. Busca un QR");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#7f0000"));
                 }else if(location.distanceTo(objective)<50){
-                    textViewDistancia.setText("Muy caliente");
+                    textViewDistancia.setText("Muy caliente. Estas a menos de 50m");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#f44336"));
                 }else if(location.distanceTo(objective)<100){
-                    textViewDistancia.setText("Caliente");
+                    textViewDistancia.setText("Caliente. Estas a menos de 100m");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#ec407a"));
                 }else if(location.distanceTo(objective)<200){
                     textViewDistancia.setText("Frio");
@@ -275,10 +275,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onResume();
     }
 
+    /*
+    Guardar y cargar datos al pausar
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
 
-
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 }

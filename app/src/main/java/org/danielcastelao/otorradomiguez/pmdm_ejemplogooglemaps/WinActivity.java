@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +15,7 @@ public class WinActivity extends AppCompatActivity {
     TextView winMessage;
     String qrMessage;
     Button botonVolver;
+    ImageView imageWin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +24,18 @@ public class WinActivity extends AppCompatActivity {
         winMessage=(TextView)findViewById(R.id.textViewWin);
         botonVolver=(Button)findViewById(R.id.buttonVolver);
         qrMessage=getIntent().getExtras().getString("qrText");
+        imageWin=(ImageView)findViewById(R.id.imageViewWin);
 
-        winMessage.setText(qrMessage);
+        //comprobamos que ha encontrado el qr correcto todo esta puesto uno de ejemplo
+        if(qrMessage.matches("Ojalá vivas tiempos interesantes")){
+            winMessage.setText(qrMessage);
+            imageWin.setVisibility(View.VISIBLE);
+        }else{
+            winMessage.setText("No es el QR correcto, sigue buscando");
+            imageWin.setVisibility(View.GONE);
+        }
+
+
 
         botonVolver.setOnClickListener(new View.OnClickListener() {
             @Override

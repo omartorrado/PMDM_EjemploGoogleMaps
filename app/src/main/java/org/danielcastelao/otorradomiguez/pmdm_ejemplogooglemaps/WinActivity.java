@@ -22,18 +22,24 @@ public class WinActivity extends AppCompatActivity {
         winMessage=(TextView)findViewById(R.id.textViewWin);
         botonVolver=(Button)findViewById(R.id.buttonVolver);
         qrMessage=getIntent().getExtras().getString("qrText");
+
         winMessage.setText(qrMessage);
 
         botonVolver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*
                 //Iniciamos la activity de escoger
                 Intent intent=new Intent(getApplicationContext(),ChooseLevelActivity.class);
                 startActivityForResult(intent,77);
+                */
+                Intent intent=new Intent(getApplicationContext(),MapsActivity.class);
+                startActivity(intent);
             }
         });
     }
 
+    //Esto ccorresponde al startActivityForResult de la ChooseActivity (que no uso de momento)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 

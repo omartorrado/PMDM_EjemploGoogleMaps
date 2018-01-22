@@ -124,8 +124,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Elegir el tipo de mapa
         //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
-        //Mostra my location
-        mMap.setMyLocationEnabled(true);
+        //Oculta el boton my location
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
         //estilo del mapa
@@ -144,10 +143,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
         }
 
+        //Mostra my location (lo ponemos aqui porque hemos comprobado los permisos justo antes)
+        mMap.setMyLocationEnabled(true);
+
         //Cargando el locationManager
         locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 5, new LocationListener() {
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 2, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 //Toast.makeText(MapsActivity.this, "Lon: "+location.getLongitude()+" Lat: "+location.getLatitude(), Toast.LENGTH_SHORT).show();

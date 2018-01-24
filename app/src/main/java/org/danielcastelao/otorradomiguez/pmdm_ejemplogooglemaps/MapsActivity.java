@@ -81,6 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         textViewLng.setText("Lng: ");
         textViewDist.setText("Distancia: ");
         textViewDistancia.setBackgroundColor(Color.parseColor("#bbdefb"));
+        textViewDistancia.setText("Sin ubicacion");
 
         objectiveLocation1 =new LatLng(42.237436,-8.714226);
         objectiveLocation2 =new LatLng(42.237154,-8.714602);
@@ -147,7 +148,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Creamos un marcador en las coordenadas anteriores
         mMap.addMarker(new MarkerOptions().position(danielCastelao).title("CFP Daniel Castelao"));
         //todo Ocultar el objetivo tras las pruebas
-        //mMap.addMarker(new MarkerOptions().position(objectiveLocation1).title("Objetivo"));
+        mMap.addMarker(new MarkerOptions().position(objectiveLocation1).title("Objetivo 1"));
+        mMap.addMarker(new MarkerOptions().position(objectiveLocation2).title("Objetivo 2"));
+        mMap.addMarker(new MarkerOptions().position(objectiveLocation3).title("Objetivo 3"));
 
         //Movermos la camara a esa posicion
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(danielCastelao, 15));

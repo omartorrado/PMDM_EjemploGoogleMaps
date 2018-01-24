@@ -17,11 +17,14 @@ public class QRActivity extends AppCompatActivity implements ZXingScannerView.Re
     private ZXingScannerView mScannerView;
     private Result lastResult;
 
+    private Intent qrintent;
+
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
         mScannerView = new ZXingScannerView(this);
         setContentView(mScannerView);
+        qrintent=this.getIntent();
     }
 
     @Override
@@ -46,6 +49,9 @@ public class QRActivity extends AppCompatActivity implements ZXingScannerView.Re
             mScannerView.resumeCameraPreview(this);
             Intent winActivity=new Intent(getApplicationContext(),WinActivity.class);
             winActivity.putExtra("qrText",lastResult.getText());
+            winActivity.putExtra("t1",qrintent.getExtras().getBoolean("t1"));
+            winActivity.putExtra("t2",qrintent.getExtras().getBoolean("t2"));
+            winActivity.putExtra("t3",qrintent.getExtras().getBoolean("t3"));
             startActivity(winActivity);
         }
     }

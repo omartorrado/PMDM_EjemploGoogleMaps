@@ -32,7 +32,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 
-import java.security.AccessController;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -43,7 +42,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location currentLocation;
     private LocationManager locationManager;
 
-    private LatLng objectiveLocation;
+    private LatLng objectiveLocation1;
+    private LatLng objectiveLocation2;
+    private LatLng objectiveLocation3;
 
     private Polyline ruta=null;
     private PolylineOptions rutaOptions;
@@ -55,8 +56,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView textViewDist;
     private TextView textViewDistancia;
 
-    private Button boton1;
+    private Button botonQR;
     final LatLng danielCastelao = new LatLng(42.236574, -8.714311);
+
+    private Intent esteIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,17 +82,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         textViewDist.setText("Distancia: ");
         textViewDistancia.setBackgroundColor(Color.parseColor("#bbdefb"));
 
-        objectiveLocation=new LatLng(42.237436,-8.714226);
+        objectiveLocation1 =new LatLng(42.237436,-8.714226);
+        objectiveLocation2 =new LatLng(42.237154,-8.714602);
+        objectiveLocation3 = new LatLng(42.23766,-8.715439);
 
-        boton1=(Button)findViewById(R.id.button1);
-        boton1.setOnClickListener(new View.OnClickListener() {
+        esteIntent=this.getIntent();
+
+        botonQR =(Button)findViewById(R.id.buttonQR);
+        //  todo descomentar
+        // botonQR.setVisibility(View.GONE);
+        botonQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent barcodeReader = new Intent(getApplicationContext(),QRActivity.class);
+                //Si fuese nulo los inicializaré en el winActivity
+                if(esteIntent.getExtras()!=null) {
+                    barcodeReader.putExtra("t1",esteIntent.getExtras().getBoolean("t1"));
+                    barcodeReader.putExtra("t2",esteIntent.getExtras().getBoolean("t2"));
+                    barcodeReader.putExtra("t3",esteIntent.getExtras().getBoolean("t3"));
+                }else{
+                    barcodeReader.putExtra("t1",false);
+                    barcodeReader.putExtra("t2",false);
+                    barcodeReader.putExtra("t3",false);
+                }
                 startActivity(barcodeReader);
             }
         });
 
+        /*
+        Comprobar si llegan los extras al volver al mapa desde el qr
+         */
+        System.out.println("¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡EXTRAS!!!!!!!!!!!!!!!!!");
+        if(esteIntent.getExtras()!=null) {
+            System.out.println(this.getIntent().getExtras().size());
+
+            System.out.println(esteIntent.getExtras().getBoolean("t1"));
+            System.out.println(esteIntent.getExtras().getBoolean("t2"));
+            System.out.println(esteIntent.getExtras().getBoolean("t3"));
+
+        }
 
     }
 
@@ -116,7 +147,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Creamos un marcador en las coordenadas anteriores
         mMap.addMarker(new MarkerOptions().position(danielCastelao).title("CFP Daniel Castelao"));
         //todo Ocultar el objetivo tras las pruebas
-        //mMap.addMarker(new MarkerOptions().position(objectiveLocation).title("Objetivo"));
+        //mMap.addMarker(new MarkerOptions().position(objectiveLocation1).title("Objetivo"));
 
         //Movermos la camara a esa posicion
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(danielCastelao, 15));
@@ -134,16 +165,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setCompassEnabled(true);
 
         //Mostramos el area de busqueda
-        mMap.addCircle(new CircleOptions().center(danielCastelao).radius(500).strokeColor(Color.WHITE));
+        mMap.addCircle(new CircleOptions().center(danielCastelao).radius(250).strokeColor(Color.WHITE));
 
         //Comprobamos los permisos de localizacion y se los pedimos en caso de no tenerlos antes de activar MyLocation
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
+
         } else{
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
         }
-
-        //Mostra my location (lo ponemos aqui porque hemos comprobado los permisos justo antes)
         mMap.setMyLocationEnabled(true);
 
         //Cargando el locationManager
@@ -192,35 +221,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
                 //Calculamos la distancia al objetivo y si estamos en el area de busqueda
-                Location objective=new Location("");
-                objective.setLatitude(objectiveLocation.latitude);
-                objective.setLongitude(objectiveLocation.longitude);
+                Location objective1=new Location("");
+                objective1.setLatitude(objectiveLocation1.latitude);
+                objective1.setLongitude(objectiveLocation1.longitude);
+
+                Location objective2=new Location("");
+                objective1.setLatitude(objectiveLocation2.latitude);
+                objective1.setLongitude(objectiveLocation2.longitude);
+
+                Location objective3=new Location("");
+                objective1.setLatitude(objectiveLocation3.latitude);
+                objective1.setLongitude(objectiveLocation3.longitude);
 
                 Location centerPosition=new Location("");
                 centerPosition.setLatitude(danielCastelao.latitude);
                 centerPosition.setLongitude(danielCastelao.longitude);
 
-                textViewDist.setText("Distancia: "+df.format(location.distanceTo(objective)));
+                textViewDist.setText("Distancia: "+df.format(location.distanceTo(objective1)));
 
-                if(location.distanceTo(centerPosition)>500){
+                //todo Comentado para pruebas, descomentar despues
+                /*
+                if(location.distanceTo(objective1)>19&&location.distanceTo(objective2)>19&&location.distanceTo(objective3)>19){
+                    botonQR.setVisibility(View.GONE);
+                }
+                */
+
+                if(location.distanceTo(centerPosition)>250){
                     textViewDistancia.setText("Has salido de la zona");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#bbdefb"));
-                }else if(location.distanceTo(objective)<20){
+                }else if(location.distanceTo(objective1)<20||location.distanceTo(objective2)<20||location.distanceTo(objective3)<20){
                     textViewDistancia.setText("Estas a menos de 20m. Busca un QR");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#7f0000"));
-                }else if(location.distanceTo(objective)<50){
+                    botonQR.setVisibility(View.VISIBLE);
+
+                }else if(location.distanceTo(objective1)<50||location.distanceTo(objective2)<50||location.distanceTo(objective3)<50){
                     textViewDistancia.setText("Muy caliente. Estas a menos de 50m");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#f44336"));
-                }else if(location.distanceTo(objective)<100){
-                    textViewDistancia.setText("Caliente. Estas a menos de 100m");
+                }else if(location.distanceTo(objective1)<90||location.distanceTo(objective2)<90||location.distanceTo(objective3)<90){
+                    textViewDistancia.setText("Caliente. Estas a menos de 90m");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#ec407a"));
-                }else if(location.distanceTo(objective)<200){
+                }else if(location.distanceTo(objective1)<130||location.distanceTo(objective2)<130||location.distanceTo(objective3)<130){
                     textViewDistancia.setText("Frio");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#ab47bc"));
-                }else if(location.distanceTo(objective)<300){
+                }else if(location.distanceTo(objective1)<170||location.distanceTo(objective2)<170||location.distanceTo(objective3)<170){
                     textViewDistancia.setText("Muy frio");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#3f51b5"));
-                }else if(location.distanceTo(objective)>=300) {
+                }else if(location.distanceTo(objective1)>=210||location.distanceTo(objective2)>=210||location.distanceTo(objective3)>=210) {
                     textViewDistancia.setText("Helado");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#42a5f5"));
                 }

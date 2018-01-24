@@ -2,4 +2,6 @@
     <string name="app_name">PMDM_EjemploGoogleMaps</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_qr">QRActivity</string>
+    <string name="volver">Volver</string>
+    <string name="salir">Salir</string>
 </resources>

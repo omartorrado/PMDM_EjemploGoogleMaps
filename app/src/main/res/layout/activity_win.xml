@@ -4,19 +4,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <ImageView
-        android:id="@+id/imageViewWin"
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:visibility="gone"
-        app:srcCompat="@mipmap/you_win" />
+        android:src="@drawable/youwin" />
 
     <Button
         android:id="@+id/buttonVolver"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Volver" />
+        android:text="@string/volver" />
+
+    <Button
+        android:id="@+id/buttonSalir"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/salir"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/textViewWin"

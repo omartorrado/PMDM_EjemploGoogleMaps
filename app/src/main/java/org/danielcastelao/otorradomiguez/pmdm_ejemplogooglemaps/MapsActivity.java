@@ -243,35 +243,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 textViewDist.setText("Distancia: "+df.format(location.distanceTo(objective1)));
 
                 //todo Comentado para pruebas, descomentar despues
-                /*
-                if(location.distanceTo(objective1)>19&&location.distanceTo(objective2)>19&&location.distanceTo(objective3)>19){
+
+                if(location.distanceTo(objective1)>20&&location.distanceTo(objective2)>20&&location.distanceTo(objective3)>20){
                     botonQR.setVisibility(View.GONE);
                 }
-                */
+
 
                 if(location.distanceTo(centerPosition)>250){
                     textViewDistancia.setText("Has salido de la zona");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#bbdefb"));
-                }else if(location.distanceTo(objective1)<20||location.distanceTo(objective2)<20||location.distanceTo(objective3)<20){
+                }else if((location.distanceTo(objective1)<20&&!esteIntent.getExtras().getBoolean("t1"))
+                        ||(location.distanceTo(objective2)<20&&!esteIntent.getExtras().getBoolean("t2"))
+                        ||(location.distanceTo(objective3)<20&&!esteIntent.getExtras().getBoolean("t3"))){
                     textViewDistancia.setText("Estas a menos de 20m. Busca un QR");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#7f0000"));
                     botonQR.setVisibility(View.VISIBLE);
-
-                }else if(location.distanceTo(objective1)<50||location.distanceTo(objective2)<50||location.distanceTo(objective3)<50){
+                }else if((location.distanceTo(objective1)<50&&!esteIntent.getExtras().getBoolean("t1"))
+                        ||(location.distanceTo(objective2)<50&&!esteIntent.getExtras().getBoolean("t2"))
+                        ||(location.distanceTo(objective3)<50&&!esteIntent.getExtras().getBoolean("t3"))){
                     textViewDistancia.setText("Muy caliente. Estas a menos de 50m");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#f44336"));
-                }else if(location.distanceTo(objective1)<90||location.distanceTo(objective2)<90||location.distanceTo(objective3)<90){
+                }else if((location.distanceTo(objective1)<90&&!esteIntent.getExtras().getBoolean("t1"))
+                        ||(location.distanceTo(objective2)<90&&!esteIntent.getExtras().getBoolean("t2"))
+                        ||(location.distanceTo(objective3)<90&&!esteIntent.getExtras().getBoolean("t3"))){
                     textViewDistancia.setText("Caliente. Estas a menos de 90m");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#ec407a"));
-                }else if(location.distanceTo(objective1)<130||location.distanceTo(objective2)<130||location.distanceTo(objective3)<130){
+                }else if((location.distanceTo(objective1)<130&&!esteIntent.getExtras().getBoolean("t1"))
+                        ||(location.distanceTo(objective2)<130&&!esteIntent.getExtras().getBoolean("t2"))
+                        ||(location.distanceTo(objective3)<130&&!esteIntent.getExtras().getBoolean("t3"))){
                     textViewDistancia.setText("Frio");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#ab47bc"));
-                }else if(location.distanceTo(objective1)<170||location.distanceTo(objective2)<170||location.distanceTo(objective3)<170){
+                }else if((location.distanceTo(objective1)<170&&!esteIntent.getExtras().getBoolean("t1"))
+                        ||(location.distanceTo(objective2)<170&&!esteIntent.getExtras().getBoolean("t2"))
+                        ||(location.distanceTo(objective3)<170&&!esteIntent.getExtras().getBoolean("t3"))){
                     textViewDistancia.setText("Muy frio");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#3f51b5"));
-                }else if(location.distanceTo(objective1)>=210||location.distanceTo(objective2)>=210||location.distanceTo(objective3)>=210) {
+                }else if((location.distanceTo(objective1)<210&&!esteIntent.getExtras().getBoolean("t1"))
+                        ||(location.distanceTo(objective2)<210&&!esteIntent.getExtras().getBoolean("t2"))
+                        ||(location.distanceTo(objective3)<210&&!esteIntent.getExtras().getBoolean("t3"))) {
                     textViewDistancia.setText("Helado");
                     textViewDistancia.setBackgroundColor(Color.parseColor("#42a5f5"));
+                }else{
+                    textViewDistancia.setText("No estas cerca de ningun tesoro");
+                    textViewDistancia.setBackgroundColor(Color.parseColor("#bbdefb"));
                 }
 
             }

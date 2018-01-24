@@ -1,7 +1,10 @@
 package org.danielcastelao.otorradomiguez.pmdm_ejemplogooglemaps;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -61,7 +64,6 @@ public class WinActivity extends AppCompatActivity {
                 imageWin.setImageResource(R.drawable.fin);
                 winMessage.setText("Bien hecho");
                 botonVolver.setVisibility(View.GONE);
-                botonSalir.setVisibility(View.VISIBLE);
             }
             imageWin.setVisibility(View.VISIBLE);
         }else if(qrMessage.matches("es.omar.tm.Tesoro2")){
@@ -72,7 +74,6 @@ public class WinActivity extends AppCompatActivity {
                 imageWin.setImageResource(R.drawable.fin);
                 winMessage.setText("Bien hecho");
                 botonVolver.setVisibility(View.GONE);
-                botonSalir.setVisibility(View.VISIBLE);
             }
             imageWin.setVisibility(View.VISIBLE);
         }else if(qrMessage.matches("es.omar.tm.Tesoro3")){
@@ -83,7 +84,6 @@ public class WinActivity extends AppCompatActivity {
                 imageWin.setImageResource(R.drawable.fin);
                 winMessage.setText("Bien hecho");
                 botonVolver.setVisibility(View.GONE);
-                botonSalir.setVisibility(View.VISIBLE);
             }
             imageWin.setVisibility(View.VISIBLE);
         }else{
@@ -105,6 +105,13 @@ public class WinActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 
     //Esto ccorresponde al startActivityForResult de la ChooseActivity (que no uso de momento)

@@ -321,9 +321,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onResume();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
     /*
-    Guardar y cargar datos al pausar
-     */
+            Guardar y cargar datos al pausar
+             */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

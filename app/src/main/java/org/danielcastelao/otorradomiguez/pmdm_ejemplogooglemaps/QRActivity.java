@@ -41,6 +41,12 @@ public class QRActivity extends AppCompatActivity implements ZXingScannerView.Re
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+    }
+
+    @Override
     public void handleResult(Result rawResult) {
         if(rawResult!=lastResult) {
             Log.i("QRCode", rawResult.getText());

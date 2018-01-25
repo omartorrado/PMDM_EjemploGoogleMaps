@@ -25,6 +25,8 @@ public class QRActivity extends AppCompatActivity implements ZXingScannerView.Re
         mScannerView = new ZXingScannerView(this);
         setContentView(mScannerView);
         qrintent=this.getIntent();
+
+        System.out.println("Tiempo qr: "+qrintent.getExtras().getLong("tiempo"));
     }
 
     @Override

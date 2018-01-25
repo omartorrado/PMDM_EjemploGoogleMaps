@@ -116,7 +116,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     barcodeReader.putExtra("t1",esteIntent.getExtras().getBoolean("t1"));
                     barcodeReader.putExtra("t2",esteIntent.getExtras().getBoolean("t2"));
                     barcodeReader.putExtra("t3",esteIntent.getExtras().getBoolean("t3"));
-                    barcodeReader.putExtra("tiempo",esteIntent.getExtras().getLong("tiempo"));
+                    barcodeReader.putExtra("tiempo",tiempoRestante);
                 }else{
                     barcodeReader.putExtra("t1",false);
                     barcodeReader.putExtra("t2",false);
@@ -137,6 +137,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             System.out.println(esteIntent.getExtras().getBoolean("t1"));
             System.out.println(esteIntent.getExtras().getBoolean("t2"));
             System.out.println(esteIntent.getExtras().getBoolean("t3"));
+            System.out.println("tiempo: "+esteIntent.getExtras().getLong("tiempo"));
 
         }
 
@@ -178,6 +179,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onFinish() {
                 tiempo.setText("HAS PERDIDO!!!!");
                 finish();
+
             }
 
         }.start();
@@ -399,6 +401,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onStop() {
         super.onStop();
+        finish();
     }
 
     @Override

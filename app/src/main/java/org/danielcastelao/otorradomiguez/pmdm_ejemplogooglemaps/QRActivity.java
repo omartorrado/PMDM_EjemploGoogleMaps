@@ -47,6 +47,16 @@ public class QRActivity extends AppCompatActivity implements ZXingScannerView.Re
     }
 
     @Override
+    public void onBackPressed() {
+        Intent intent=new Intent(getApplicationContext(),MapsActivity.class);
+        intent.putExtra("t1",qrintent.getExtras().getBoolean("t1"));
+        intent.putExtra("t2",qrintent.getExtras().getBoolean("t2"));
+        intent.putExtra("t3",qrintent.getExtras().getBoolean("t3"));
+        intent.putExtra("tiempo",qrintent.getExtras().getLong("tiempo"));
+        startActivity(intent);
+    }
+
+    @Override
     public void handleResult(Result rawResult) {
         if(rawResult!=lastResult) {
             Log.i("QRCode", rawResult.getText());
@@ -58,6 +68,7 @@ public class QRActivity extends AppCompatActivity implements ZXingScannerView.Re
             winActivity.putExtra("t1",qrintent.getExtras().getBoolean("t1"));
             winActivity.putExtra("t2",qrintent.getExtras().getBoolean("t2"));
             winActivity.putExtra("t3",qrintent.getExtras().getBoolean("t3"));
+            winActivity.putExtra("tiempo",qrintent.getExtras().getLong("tiempo"));
             startActivity(winActivity);
         }
     }

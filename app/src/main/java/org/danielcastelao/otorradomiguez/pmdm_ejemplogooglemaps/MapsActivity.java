@@ -1,6 +1,7 @@
 package org.danielcastelao.otorradomiguez.pmdm_ejemplogooglemaps;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -34,6 +36,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -61,6 +64,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Intent esteIntent;
 
+    private TextView tiempo;
+    private long tiempoRestante;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +82,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         textViewDist=(TextView) findViewById(R.id.textViewDist);
         textViewDistancia=(TextView) findViewById(R.id.textViewDistancia);
 
+        esteIntent=this.getIntent();
+
+        tiempo=(TextView)findViewById(R.id.tiempo);
+        if(esteIntent.getExtras()!=null){
+            tiempoRestante=esteIntent.getExtras().getLong("tiempo");
+        }else {
+            tiempoRestante = 0;
+        }
+
         textViewAccuracy.setText("Acc: ");
         textViewLat.setText("Lat: ");
         textViewLng.setText("Lng: ");
@@ -87,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         objectiveLocation2 =new LatLng(42.237154,-8.714602);
         objectiveLocation3 = new LatLng(42.23766,-8.715439);
 
-        esteIntent=this.getIntent();
+
 
         botonQR =(Button)findViewById(R.id.buttonQR);
         //  todo descomentar
@@ -101,10 +116,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     barcodeReader.putExtra("t1",esteIntent.getExtras().getBoolean("t1"));
                     barcodeReader.putExtra("t2",esteIntent.getExtras().getBoolean("t2"));
                     barcodeReader.putExtra("t3",esteIntent.getExtras().getBoolean("t3"));
+                    barcodeReader.putExtra("tiempo",esteIntent.getExtras().getLong("tiempo"));
                 }else{
                     barcodeReader.putExtra("t1",false);
                     barcodeReader.putExtra("t2",false);
                     barcodeReader.putExtra("t3",false);
+                    barcodeReader.putExtra("tiempo",tiempoRestante);
                 }
                 startActivity(barcodeReader);
             }
@@ -123,6 +140,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
 
+
+        /*
+        TIMER
+         */
+        long tiempoHastaAcabar;
+        if(tiempoRestante!=0){
+            tiempoHastaAcabar=tiempoRestante;
+        }else{
+            tiempoHastaAcabar=10000;
+        }
+
+
+//2706000 45min en milis, si paso a la win activity, no me mantiene el contador
+        new CountDownTimer(tiempoHastaAcabar, 1000) {
+
+            @SuppressLint({"DefaultLocale", "SetTextI18n"})
+            public void onTick(long millisUntilFinished) {
+                final String FORMAT="%02d:%02d:%02d";
+                long tiempoHastaAcabar;
+                if(tiempoRestante!=0){
+                    tiempoHastaAcabar=tiempoRestante;
+                }else{
+                    tiempoHastaAcabar=millisUntilFinished;
+                }
+
+                tiempo.setText("Tiempo Restante :"+String.format(FORMAT,
+                        TimeUnit.MILLISECONDS.toHours(tiempoHastaAcabar),
+                        TimeUnit.MILLISECONDS.toMinutes(tiempoHastaAcabar) - TimeUnit.HOURS.toMinutes(
+                                TimeUnit.MILLISECONDS.toHours(tiempoHastaAcabar)),
+                        TimeUnit.MILLISECONDS.toSeconds(tiempoHastaAcabar) - TimeUnit.MINUTES.toSeconds(
+                                TimeUnit.MILLISECONDS.toMinutes(tiempoHastaAcabar))));
+                tiempoRestante=millisUntilFinished;
+            }
+
+            @SuppressLint("SetTextI18n")
+            public void onFinish() {
+                tiempo.setText("HAS PERDIDO!!!!");
+                finish();
+            }
+
+        }.start();
     }
 
 
@@ -229,12 +287,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 objective1.setLongitude(objectiveLocation1.longitude);
 
                 Location objective2=new Location("");
-                objective1.setLatitude(objectiveLocation2.latitude);
-                objective1.setLongitude(objectiveLocation2.longitude);
+                objective2.setLatitude(objectiveLocation2.latitude);
+                objective2.setLongitude(objectiveLocation2.longitude);
 
                 Location objective3=new Location("");
-                objective1.setLatitude(objectiveLocation3.latitude);
-                objective1.setLongitude(objectiveLocation3.longitude);
+                objective3.setLatitude(objectiveLocation3.latitude);
+                objective3.setLongitude(objectiveLocation3.longitude);
 
                 Location centerPosition=new Location("");
                 centerPosition.setLatitude(danielCastelao.latitude);

@@ -50,6 +50,7 @@ public class WinActivity extends AppCompatActivity {
         intent.putExtra("t1",winIntent.getExtras().getBoolean("t1"));
         intent.putExtra("t2",winIntent.getExtras().getBoolean("t2"));
         intent.putExtra("t3",winIntent.getExtras().getBoolean("t3"));
+        intent.putExtra("tiempo",winIntent.getExtras().getLong("tiempo"));
 
         tesoro1=winIntent.getExtras().getBoolean("t1");
         tesoro2=winIntent.getExtras().getBoolean("t2");
@@ -107,11 +108,18 @@ public class WinActivity extends AppCompatActivity {
         });
 
 
+
     }
 
     @Override
     public void onBackPressed() {
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
     }
 
     //Esto ccorresponde al startActivityForResult de la ChooseActivity (que no uso de momento)
